@@ -76,8 +76,7 @@
             <h3>选择练习行:</h3>
             <div style="display: grid; grid-template-columns: 2fr; gap: 0px"> <!-- reduced from 8px -->
                 {% raw %}
-                <div v-for="row in rows" :key="row.num"
-                    style="display: flex; align-items: baseline">
+                <div v-for="row in rows" :key="row.num" style="display: flex; align-items: baseline">
                     <label :for="'row-'+row.num" style="min-width: 60px">{{ row.name }}</label>
                     <input type="checkbox" :id="'row-'+row.num" v-model="selectedRows" :value="row.num">
                 </div>
@@ -201,22 +200,19 @@
                         });
 
                         const data = await response.json();
+                        console.log('Backend response:', data); // Debug log
 
-                        // Add validation for selected rows
-                        if (selectedRows.value.includes(0)) {
-                            // "All" selected - use all data
-                            studySet.value = data.hiragana.map((h, i) => [h, data.katakana[i], data.romaji[i]]);
-                        } else {
-                            // Filter by selected rows - each row contains 5 characters
-                            studySet.value = selectedRows.value.flatMap(rowNum => {
-                                const startIdx = (rowNum - 1) * 5;
-                                return data.hiragana.slice(startIdx, startIdx + 5).map((h, i) => [
-                                    h,
-                                    data.katakana[startIdx + i],
-                                    data.romaji[startIdx + i]
-                                ]);
-                            });
+                        // Modified validation
+                        if (!data || !data.hiragana || !data.katakana || !data.romaji) {
+                            alert('无效的练习数据格式');
+                            return;
                         }
+
+                        studySet.value = selectedRows.value.includes(0)
+                            ? data.hiragana.map((h, i) => [h, data.katakana[i], data.romaji[i]])
+                            : data.hiragana
+                                .filter((_, i) => selectedRows.value.includes(Math.floor(i / 5) + 1))
+                                .map((h, i) => [h, data.katakana[i], data.romaji[i]]);
 
                         if (studySet.value.length === 0) {
                             alert('没有可用的练习数据，请选择其他行。');
@@ -267,6 +263,7 @@
                         }
                         const elapsed = (performance.now() - startTime) / 1000;
                         responseTimes.value.push(elapsed);
+                        averageTime.value = (responseTimes.value.reduce((a, b) => a + b, 0) / responseTimes.value.length).toFixed(2);
 
                         userAnswer.value = '';
                         setTimeout(nextQuestion, 1000); // 1秒后下一题
@@ -298,7 +295,8 @@
                     totalAnswers,
                     studySet,
                     displayQuestion,
-                    mistakes
+                    mistakes,
+                    responseTimes
                     // ... exposed properties ...
                 }
             }

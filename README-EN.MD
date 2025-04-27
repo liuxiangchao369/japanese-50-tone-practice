@@ -8,7 +8,7 @@ Real-time accuracy statistics and response time tracking are provided.
 
 # Usage
 
-If there is no develop envirment in your computer，you can run [the exe](https://github.com/liuxiangchao369/japanese-50-tone-practice/releases/download/V1.0.0/hiragana_katakana_trainer.exe) file dirctly.
+If there is no develop envirment in your computer，you can run [the exe](https://github.com/liuxiangchao369/japanese-50-tone-practice/releases) file dirctly.
 
 
 
