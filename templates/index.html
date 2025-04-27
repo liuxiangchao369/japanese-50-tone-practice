@@ -74,9 +74,14 @@
 
         <div class="control-panel">
             <h3>选择练习行:</h3>
-            <div v-for="row in rows" :key="row.num">
-                <input type="checkbox" :id="'row-'+row.num" v-model="selectedRows" :value="row.num">
-                <label :for="'row-'+row.num">{% raw %}{{ row.name }}{% endraw %}</label>
+            <div style="display: grid; grid-template-columns: 2fr; gap: 0px"> <!-- reduced from 8px -->
+                {% raw %}
+                <div v-for="row in rows.filter(r => r.num !== 0)" :key="row.num" 
+                    style="display: flex; align-items: baseline">
+                   <label :for="'row-'+row.num" style="min-width: 60px">{{ row.name }}</label>
+                   <input type="checkbox" :id="'row-'+row.num" v-model="selectedRows" :value="row.num">
+               </div>
+                {% endraw %}
             </div>
 
             <h3>选择模式:</h3>
@@ -96,14 +101,21 @@
 
             <input v-model="userAnswer" @keyup.enter="checkAnswer" :placeholder="answerPlaceholder" autofocus>
 
-            <div class="result" :class="lastResult ? 'correct' : 'incorrect'" v-if="lastResult !== null">
-                <span v-if="lastResult">正确!</span>
-                <span v-else>错误! 正确答案: {{ correctAnswer }} ({{ correctRomaji }})</span>
+            <div v-if="lastResult !== null" class="result" :class="lastResult ? 'correct' : 'incorrect'">
+                <span v-if="lastResult" v-text="'正确!'"></span>
+                <span v-else v-text="`错误! 正确答案: ${correctAnswer} (${correctRomaji})`"></span>
             </div>
 
-            <div class="stats">
-                正确率: {{ accuracy }}% | 平均响应: {{ averageTime }}s | 总数: {{ totalAnswers }}
+            <div class="stats" v-text="`正确率: ${accuracy}% | 平均响应: ${averageTime}s | 总数: ${totalAnswers}`"></div>
+
+            <div class="err">
+                错题记录
+
+
+
+                错题记录
             </div>
+
         </div>
     </div>
 
@@ -111,7 +123,7 @@
         const random = {
             choice: (arr) => arr[Math.floor(Math.random() * arr.length)]
         };
-        const { createApp, ref, computed } = Vue;
+        const { createApp, ref, computed, nextTick } = Vue;
 
         createApp({
             setup() {
@@ -123,7 +135,6 @@
                     { num: 7, name: 'ま行' }, { num: 8, name: 'や行' },
                     { num: 9, name: 'ら行' }, { num: 10, name: 'わ行' }
                 ];
-
                 const modes = [
                     { value: 1, label: '平→片' },
                     { value: 2, label: '片→平' },
@@ -147,8 +158,8 @@
                         currentMode.value === 2 ? '输入平假名' :
                             '输入对应假名'
                 );
-                const displayQuestion = computed(() => 
-                currentQuestion.value || '无题目'
+                const displayQuestion = computed(() =>
+                    currentQuestion.value || '无题目'
                 );
 
                 const accuracy = computed(() =>
@@ -156,15 +167,12 @@
                 );
                 const averageTime = computed(() =>
                     responseTimes.value.length > 0 ?
-                        (responseTimes.value.reduce((a, b) => a + b, 0) / responseTimes.value.length) : 0  // 修复括号匹配
+                        (responseTimes.value.reduce((a, b) => a + b, 0) / responseTimes.value.length).toFixed(1) : '0.0'
                 );
-                const nextQuestion = () => {               
+                const nextQuestion = () => {
                     if (studySet.value.length === 0) return;
                     const item = random.choice(studySet.value);
-                    console.log('Raw item:', JSON.parse(JSON.stringify(item))); // 解除Proxy
                     const [hira, kata, romaji] = item;
-                    currentQuestion.value = item[0]; // 强制测试显示平假名
-                    console.log('DOM should show:', currentQuestion.value);
                     if (currentMode.value === 1 || (currentMode.value === 3 && Math.random() < 0.5)) {
                         currentQuestionType.value = 'hira';
                         currentQuestion.value = hira;
@@ -225,10 +233,15 @@
                         });
 
                         const result = await response.json();
+                        console.log('Received:', {
+                            answer: result.correct_answer,
+                            romaji: result.romaji
+                        });
                         lastResult.value = result.correct;
-                        correctAnswer.value = result.correct_answer;
-                        correctRomaji.value = result.romaji;
+                        correctAnswer.value = result.correct_answer || 'aaaa';
+                        correctRomaji.value = result.romaji || 'bbbb';
 
+                        await nextTick(); // 等待DOM更新
                         totalAnswers.value++;
                         if (result.correct) correctAnswers.value++;
 
