@@ -76,11 +76,11 @@
             <h3>选择练习行:</h3>
             <div style="display: grid; grid-template-columns: 2fr; gap: 0px"> <!-- reduced from 8px -->
                 {% raw %}
-                <div v-for="row in rows.filter(r => r.num !== 0)" :key="row.num" 
+                <div v-for="row in rows" :key="row.num"
                     style="display: flex; align-items: baseline">
-                   <label :for="'row-'+row.num" style="min-width: 60px">{{ row.name }}</label>
-                   <input type="checkbox" :id="'row-'+row.num" v-model="selectedRows" :value="row.num">
-               </div>
+                    <label :for="'row-'+row.num" style="min-width: 60px">{{ row.name }}</label>
+                    <input type="checkbox" :id="'row-'+row.num" v-model="selectedRows" :value="row.num">
+                </div>
                 {% endraw %}
             </div>
 
@@ -108,12 +108,15 @@
 
             <div class="stats" v-text="`正确率: ${accuracy}% | 平均响应: ${averageTime}s | 总数: ${totalAnswers}`"></div>
 
-            <div class="err">
-                错题记录
-
-
-
-                错题记录
+            <div class="mistakes-section" v-if="mistakes.length > 0">
+                <h3 v-text="`错题记录 (${mistakes.length})`"></h3>
+                <div class="mistakes-list">
+                    <div v-for="(mistake, index) in mistakes" :key="index" class="mistake-item">
+                        <span v-text="`${mistake.question} → `"></span>
+                        <span class="correct-answer" v-text="mistake.correctAnswer"></span>
+                        <span v-text="`(${mistake.romaji})`"></span>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -140,6 +143,7 @@
                     { value: 2, label: '片→平' },
                     { value: 3, label: '混合' }
                 ];
+                const mistakes = ref([]);  // Add to ref declarations
                 const currentQuestionType = ref(''); // 新增
                 const currentMode = ref(3);  // 添加状态声明
                 const selectedRows = ref([0]);  // 添加状态声明
@@ -197,21 +201,30 @@
                         });
 
                         const data = await response.json();
-                        console.log('Received data:', data);  // 调试用
-                        if (!data.success) {
+
+                        // Add validation for selected rows
+                        if (selectedRows.value.includes(0)) {
+                            // "All" selected - use all data
+                            studySet.value = data.hiragana.map((h, i) => [h, data.katakana[i], data.romaji[i]]);
+                        } else {
+                            // Filter by selected rows - each row contains 5 characters
+                            studySet.value = selectedRows.value.flatMap(rowNum => {
+                                const startIdx = (rowNum - 1) * 5;
+                                return data.hiragana.slice(startIdx, startIdx + 5).map((h, i) => [
+                                    h,
+                                    data.katakana[startIdx + i],
+                                    data.romaji[startIdx + i]
+                                ]);
+                            });
+                        }
+
+                        if (studySet.value.length === 0) {
                             alert('没有可用的练习数据，请选择其他行。');
                             return;
                         }
-                        // 确保数据格式正确
-                        if (!data.hiragana || !data.katakana) {
-                            console.error('Invalid data format:', data);
-                            return;
-                        }
-                        // 将后端数据转换为可用格式
-                        studySet.value = data.hiragana.map((h, i) => [h, data.katakana[i], data.romaji[i]]);
 
                         isPracticing.value = true;
-                        nextQuestion(); // 初始化第一题
+                        nextQuestion();
                     } catch (error) {
                         console.error('Error:', error);
                     }
@@ -244,7 +257,14 @@
                         await nextTick(); // 等待DOM更新
                         totalAnswers.value++;
                         if (result.correct) correctAnswers.value++;
-
+                        if (!result.correct) {
+                            mistakes.value.push({
+                                question: currentQuestion.value,
+                                userAnswer: userAnswer.value,
+                                correctAnswer: result.correct_answer,
+                                romaji: result.romaji
+                            });
+                        }
                         const elapsed = (performance.now() - startTime) / 1000;
                         responseTimes.value.push(elapsed);
 
@@ -277,7 +297,8 @@
                     lastResult,
                     totalAnswers,
                     studySet,
-                    displayQuestion
+                    displayQuestion,
+                    mistakes
                     // ... exposed properties ...
                 }
             }
