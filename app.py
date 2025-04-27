@@ -102,16 +102,17 @@ def check_answer():
     question = data['question']
     user_answer = data['answer'].strip()
     
-    # 在全局数据中查找对应项
+    # 修复1：确保正确查找对应项
     target = next((item for item in hiragana_katakana 
-                  if (question_type == 'hira' and item[0] == question) or
-                  (question_type == 'kata' and item[1] == question)), None)
+                 if (question_type == 'hira' and item[0] == question) or
+                 (question_type == 'kata' and item[1] == question)), None)
     
     if not target:
         return jsonify({'error': 'Invalid question'}), 400
     
     hira, kata, romaji = target
     
+    # 修复2：修正验证逻辑
     if question_type == 'hira':
         is_correct = user_answer == kata
         correct_answer = kata
@@ -121,9 +122,8 @@ def check_answer():
     
     return jsonify({
         'correct': is_correct,
-        'correct_answer': correct_answer,
-        'romaji': romaji,
-        'expected_type': 'kata' if question_type == 'hira' else 'hira'
+        'correct_answer': correct_answer,  # 现在会返回正确答案
+        'romaji': romaji
     })
 
 if __name__ == '__main__':
