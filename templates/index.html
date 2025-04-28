@@ -200,25 +200,14 @@
                         });
 
                         const data = await response.json();
-                        console.log('Backend response:', data); // Debug log
 
-                        // Modified validation
-                        if (!data || !data.hiragana || !data.katakana || !data.romaji) {
-                            alert('无效的练习数据格式');
-                            return;
-                        }
-
-                        studySet.value = selectedRows.value.includes(0)
-                            ? data.hiragana.map((h, i) => [h, data.katakana[i], data.romaji[i]])
-                            : data.hiragana
-                                .filter((_, i) => selectedRows.value.includes(Math.floor(i / 5) + 1))
-                                .map((h, i) => [h, data.katakana[i], data.romaji[i]]);
-
-                        if (studySet.value.length === 0) {
+                        if (!data || !data.success || data.hiragana.length === 0) {
                             alert('没有可用的练习数据，请选择其他行。');
                             return;
                         }
 
+                        // 直接使用后端过滤后的数据
+                        studySet.value = data.hiragana.map((h, i) => [h, data.katakana[i], data.romaji[i]]);
                         isPracticing.value = true;
                         nextQuestion();
                     } catch (error) {
