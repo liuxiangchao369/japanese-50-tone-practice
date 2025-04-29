@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>日语词汇练习</title>
+    <style>
+        body { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .question { font-size: 24px; margin: 20px 0; }
+        input { padding: 8px; width: 200px; }
+        .mode-switch { margin-bottom: 20px; }
+        .mode-switch a { 
+            padding: 8px 12px; 
+            background: #f0f0f0; 
+            border-radius: 4px; 
+            text-decoration: none; 
+        }
+        .feedback { margin-top: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>日语词汇练习</h1>
+    <div class="mode-switch">
+        <a href="/">50音图</a> | 
+        <a href="/word/add">添加词汇</a>
+    </div>
+
+    <form method="post" action="/word/practice">
+        <h3>{% if question %}切换{% else %}选择{% endif %}练习模式:</h3>
+        {% for id, name in modes %}
+            <input type="radio" name="mode" value="{{ id }}" 
+                   {% if mode == id or (not question and loop.first) %}checked{% endif %}>
+            <label>{{ name }}</label><br>
+        {% endfor %}
+        <button type="submit">{% if question %}切换模式{% else %}开始练习{% endif %}</button>
+    </form>
+
+    {% if question %}
+    <div class="question">{{ question }}</div>
+    <form method="post" action="/word/practice">
+        <input type="hidden" name="mode" value="{{ mode }}">
+        <input type="hidden" name="prev_question" value="{{ question }}">
+        <input type="hidden" name="prev_answer" value="{{ answer }}">
+        <input type="text" name="answer" autofocus>
+        <button type="submit">提交</button>
+    </form>
+    {% endif %}
+
+    {% if is_correct is not none %}
+    <div class="feedback">
+        {% if is_correct %}正确!{% else %}错误! 答案: {{ prev_answer }}{% endif %}
+    </div>
+    {% endif %}
+</body>
+</html>

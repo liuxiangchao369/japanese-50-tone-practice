@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <h2>添加自定义词汇</h2>
+    <form method="post">
+        假名:     <input name="hiragana" required><br>
+        漢字: <input name="kanji" required><br>
+        中文:       <input name="meaning" required><br>
+        <button type="submit">添加</button>
+    </form>
+    <a href="/word">返回练习</a>
+
+    <h3>现有词汇:</h3>
+    <table border="3">
+        <tr>
+            <th>平假名</th>
+            <th>日本語漢字</th>
+            <th>中文</th>
+        </tr>
+        {% for word in vocab %}
+        <tr>
+            <td>{{ word[0] }}</td>
+            <td>{{ word[1] }}</td>
+            <td>{{ word[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>

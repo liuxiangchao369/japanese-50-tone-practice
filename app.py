@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify,redirect, url_for
 import random
 import time
 app = Flask(__name__)
@@ -25,6 +25,20 @@ hiragana_katakana = [
     # わ行
     ("わ", "ワ", "wa"), ("を", "ヲ", "wo"), ("ん", "ン", "n")
 ]
+
+vocab_data = [
+
+    ["あい", "愛", "爱"],
+    ["あう", "会う", "遇见"],
+    ["いえ", "家", "房子"],
+    ["うえ", "上", "上面"],
+    ["え", "絵", "画"],
+    ["おい", "甥", "外甥"],
+    ["おう", "追う", "追赶"],
+    ["あお", "青", "蓝色"],
+]
+
+
 def select_mode():
     print("\n请选择练习模式:")
     print("1: 平假名 → 片假名")
@@ -126,5 +140,57 @@ def check_answer():
         'romaji': romaji
     })
 
+
+@app.route('/word')
+def word_practice():
+    return render_template('word.html',
+                         modes=[(1,"平假名→日本語漢字"), (2,"中文→日本語漢字"), (3,"日本語漢字→中文")],
+                         vocab=vocab_data)
+
+@app.route('/word/practice', methods=['POST'])
+def word_practice_session():
+    mode = int(request.form.get('mode', 1))
+    
+    # Generate question first
+    question, answer = generate_question(mode)
+    
+    # Check previous answer if submitted
+    if 'answer' in request.form:
+        prev_answer = request.form.get('prev_answer', '')
+        user_answer = request.form.get('answer', '')
+        is_correct = (user_answer == prev_answer)
+        return render_template('word.html',
+                            question=question,
+                            answer=answer,
+                            prev_answer=prev_answer,
+                            is_correct=is_correct,
+                            mode=mode,
+                            modes=[(1,"平假名→汉字"), (2,"中文→汉字"), (3,"汉字→中文")])
+    
+    return render_template('word.html',
+                         question=question,
+                         answer=answer,
+                         mode=mode,
+                         modes=[(1,"平假名→汉字"), (2,"中文→汉字"), (3,"汉字→中文")])
+@app.route('/word/add', methods=['GET', 'POST'])
+def add_vocab():
+    if request.method == 'POST':
+        new_word = [
+            request.form['hiragana'],
+            request.form['kanji'],
+            request.form['meaning']
+        ]
+        vocab_data.append(new_word)
+        return redirect(url_for('word_practice'))
+    return render_template('add_vocab.html', vocab=vocab_data)
+
+def generate_question(mode):
+    item = random.choice(vocab_data)
+    if mode == 1:
+        return f"写出「{item[0]}」对应的汉字", item[1]
+    elif mode == 2:
+        return f"写出「{item[2]}」对应的日文汉字", item[1]
+    else:
+        return f"写出「{item[1]}」对应的中文意思", item[2]
 if __name__ == '__main__':
     app.run(debug=True)  # 开发模式

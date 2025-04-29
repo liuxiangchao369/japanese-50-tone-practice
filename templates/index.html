@@ -71,7 +71,11 @@
 <body>
     <div id="app">
         <h1>日语50音练习</h1>
-
+        <div style="margin-bottom: 20px;">
+            <a href="/word" style="padding: 8px 12px; background: #f0f0f0; border-radius: 4px; text-decoration: none;">
+                切换到词汇练习
+            </a>
+        </div>
         <div class="control-panel">
             <h3>选择练习行:</h3>
             <div style="display: grid; grid-template-columns: 2fr; gap: 0px"> <!-- reduced from 8px -->
@@ -250,7 +254,7 @@
                                 romaji: result.romaji
                             });
                         }
-                        const elapsed = (performance.now() - startTime) / 1000;
+                        const elapsed = (performance.now() - startTime);
                         responseTimes.value.push(elapsed);
                         averageTime.value = (responseTimes.value.reduce((a, b) => a + b, 0) / responseTimes.value.length).toFixed(2);
 
