@@ -6,12 +6,14 @@
 
 并实时统计正确率与用时
 
+2025/4/29增加了词汇练习功能，用户可以自定义练习词汇，并随机抽题目答题
+
 # 使用方法
 
 如果你的电脑没有python环境，可以直接使用我[打包好的exe](https://github.com/liuxiangchao369/japanese-50-tone-practice/releases)
 
 如果打不开链接，请使用下面的链接下载
-[国内下载地址](https://gitee.com/MorWin/japanese-50-tone-practice/releases/tag/V1.0.1)
+[国内下载地址](https://gitee.com/MorWin/japanese-50-tone-practice/releases/)
 
 
 
