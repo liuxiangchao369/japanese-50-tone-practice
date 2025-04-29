@@ -31,6 +31,8 @@ stats = {
     'start_time': None,
     'durations': []
 }
+
+mistakes = []#词汇练习错题本
 vocab_data = [
 
     ["あい", "愛", "爱"],
@@ -154,7 +156,8 @@ def word_practice():
 
 @app.route('/word/practice', methods=['POST'])
 def word_practice_session():
-    global stats
+    global stats,mistakes
+
     mode = int(request.form.get('mode', 1))
     is_correct = None  # Initialize variable
     # Check previous answer
@@ -167,6 +170,16 @@ def word_practice_session():
     # Generate new question
     question, answer = generate_question(mode)
     stats['start_time'] =time.time()
+    # In word_practice_session()
+    if 'answer' in request.form and not is_correct:
+        mistakes.append({
+            'question': request.form['prev_question'],
+            'correct': request.form['prev_answer'],
+            'user_answer': request.form['answer']
+        })
+
+    # Add to render_template()
+    mistakes=mistakes[-5:]  # Show last 5 mistakes
     
     return render_template('word.html',
         question=question,
@@ -176,7 +189,8 @@ def word_practice_session():
         accuracy=f"{stats['correct']}/{stats['total']}",
         avg_time=f"{sum(stats['durations'])/len(stats['durations']):.1f}" if stats['durations'] else '-',
         mode=mode,
-       modes=[(1,"平假名→日本語漢字"), (2,"中文→日本語漢字"), (3,"日本語漢字→中文")]
+       modes=[(1,"平假名→日本語漢字"), (2,"中文→日本語漢字"), (3,"日本語漢字→中文")],
+       mistakes=mistakes[-5:] if mistakes else [] 
     )
 @app.route('/word/add', methods=['GET', 'POST'])
 def add_vocab():

@@ -83,6 +83,46 @@
             color: #666;
         }
     </style>
+
+    <!-- Add after stats -->
+    {% if mistakes %}
+    <div class="mistakes">
+        <h3>错题记录:</h3>
+        <table>
+            <tr>
+                <th>题目</th>
+                <th>正确答案</th>
+                <th>你的答案</th>
+            </tr>
+            {% for m in mistakes %}
+            <tr>
+                <td>{{ m.question }}</td>
+                <td>{{ m.correct }}</td>
+                <td>{{ m.user_answer }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <style>
+        .mistakes {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .mistakes table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .mistakes th,
+        .mistakes td {
+            padding: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+    {% endif %}
 </body>
 
 </html>
