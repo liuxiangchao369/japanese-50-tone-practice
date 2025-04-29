@@ -25,7 +25,12 @@ hiragana_katakana = [
     # わ行
     ("わ", "ワ", "wa"), ("を", "ヲ", "wo"), ("ん", "ン", "n")
 ]
-
+stats = {
+    'total': 0,
+    'correct': 0,
+    'start_time': None,
+    'durations': []
+}
 vocab_data = [
 
     ["あい", "愛", "爱"],
@@ -149,29 +154,30 @@ def word_practice():
 
 @app.route('/word/practice', methods=['POST'])
 def word_practice_session():
+    global stats
     mode = int(request.form.get('mode', 1))
+    is_correct = None  # Initialize variable
+    # Check previous answer
+    if 'answer' in request.form and stats['start_time']:
+        stats['total'] += 1
+        is_correct = (request.form['answer'] == request.form['prev_answer'])
+        stats['correct'] += int(is_correct)
+        stats['durations'].append(time.time() - stats['start_time'])
     
-    # Generate question first
+    # Generate new question
     question, answer = generate_question(mode)
-    
-    # Check previous answer if submitted
-    if 'answer' in request.form:
-        prev_answer = request.form.get('prev_answer', '')
-        user_answer = request.form.get('answer', '')
-        is_correct = (user_answer == prev_answer)
-        return render_template('word.html',
-                            question=question,
-                            answer=answer,
-                            prev_answer=prev_answer,
-                            is_correct=is_correct,
-                            mode=mode,
-                            modes=[(1,"平假名→汉字"), (2,"中文→汉字"), (3,"汉字→中文")])
+    stats['start_time'] =time.time()
     
     return render_template('word.html',
-                         question=question,
-                         answer=answer,
-                         mode=mode,
-                         modes=[(1,"平假名→汉字"), (2,"中文→汉字"), (3,"汉字→中文")])
+        question=question,
+        answer=answer,
+        is_correct=is_correct if 'answer' in request.form else None,
+        prev_answer=request.form.get('prev_answer', ''),
+        accuracy=f"{stats['correct']}/{stats['total']}",
+        avg_time=f"{sum(stats['durations'])/len(stats['durations']):.1f}" if stats['durations'] else '-',
+        mode=mode,
+       modes=[(1,"平假名→日本語漢字"), (2,"中文→日本語漢字"), (3,"日本語漢字→中文")]
+    )
 @app.route('/word/add', methods=['GET', 'POST'])
 def add_vocab():
     if request.method == 'POST':
