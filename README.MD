@@ -8,6 +8,8 @@
 
 2025/4/29增加了词汇练习功能，用户可以自定义练习词汇，并随机抽题目答题
 
+tips:本应用对书写能力起不到练习作用，如有书写能力练习需求，需要用户辅助其它手段练习
+
 # 使用方法
 
 如果你的电脑没有python环境，可以直接使用我[打包好的exe](https://github.com/liuxiangchao369/japanese-50-tone-practice/releases)
