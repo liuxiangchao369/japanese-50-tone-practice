@@ -61,7 +61,6 @@ hiragana_katakana = [
     ("ん", "ン", "n"),
 ]
 vocabulary = [
-
     ["あい", "愛", "爱"],
     ["あう", "会う", "遇见"],
     ["いえ", "家", "房子"],
@@ -79,7 +78,7 @@ def select_mode():
     print("2: 片假名 → 平假名")
     print("3: 混合模式")
     print("4: 词汇练习 (平假名→汉字)")
-    print("5: 词汇练习 (中文→平假名)")
+    print("5: 词汇练习 (中文→汉字)")
     while True:
         choice = input("输入数字选择(1-5): ").strip()
         if choice in ["1", "2", "3", "4", "5"]:
@@ -128,9 +127,28 @@ def main():
         if mode in [1, 2, 3]:
             # 原有的50音练习代码
             hira, kata, romaji = random.choice(study_set)
-            # ... rest of existing kana practice code ...
+            start_time = time.time()
+            if mode == 1 or (mode == 3 and random.random() < 0.5):
+                print(f"\n平假名: {hira}")
+                user_answer = input("片假名: ").strip()
+                if user_answer.lower() == 'q':
+                    break
+                if user_answer == kata:
+                    print("正确!")
+                    correct += 1
+                else:
+                    print(f"错误! 正确答案: {kata} (罗马音: {romaji})")
+            else:
+                print(f"\n片假名: {kata}")
+                user_answer = input("平假名: ").strip()
+                if user_answer.lower() == 'q':
+                    break
+                if user_answer == hira:
+                    print("正确!")
+                    correct += 1
+                else:
+                    print(f"错误! 正确答案: {hira} (罗马音: {romaji})")
         else:
-            # 词汇练习模式
             hira, kanji, meaning = random.choice(vocabulary)
             start_time = time.time()
 
@@ -140,8 +158,8 @@ def main():
                 correct_answer = kanji
             else:  # mode 5
                 print(f"\n中文: {meaning}")
-                user_answer = input("平假名: ").strip()
-                correct_answer = hira
+                user_answer = input("日文汉字: ").strip()
+                correct_answer = kanji
 
             if user_answer.lower() == "q":
                 break
@@ -150,12 +168,16 @@ def main():
                 print("正确!")
                 correct += 1
             else:
-                print(f"错误! 正确答案: {correct_answer}")
+                # Enhanced error feedback
+                if mode == 4:
+                    print(f"错误! 正确答案: {kanji} (平假名: {hira})")
+                else:  # mode 5
+                    print(f"错误! 正确答案: {kanji} (平假名: {hira})")
 
             # 更新统计信息
-            total += 1
-            elapsed = time.time() - start_time
-            total_time += elapsed
+        total += 1
+        elapsed = time.time() - start_time
+        total_time += elapsed
         accuracy = (correct / total) * 100 if total > 0 else 0
         avg_time = total_time / total if total > 0 else 0
         print(
