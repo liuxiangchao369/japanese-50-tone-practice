@@ -18,7 +18,7 @@ tips:本应用对书写能力起不到练习作用，如有书写能力练习需
 
 如果打不开链接，请使用下面的链接下载
 [国内下载地址](https://gitee.com/MorWin/japanese-50-tone-practice/releases/)
-
+![输入图片说明](src/%E5%9B%BE%E7%89%87.png)
 
 
 运行`JapanesePractice.exe`之后打开浏览器，在地址栏输入
