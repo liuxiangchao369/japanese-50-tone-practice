@@ -1,55 +1,60 @@
-# Introduction
+# Japanese Hiragana/Katakana Learning Tool
 
-This project develops a simple Japanese Hiragana/Katakana practice program.
+## Overview
 
-It randomly generates hiragana/katakana characters and requires you to input the corresponding katakana/hiragana.
+This project provides an interactive Japanese kana (hiragana/katakana) learning application with the following features:
 
-Real-time accuracy statistics and response time tracking are provided.
+- Random character generation for hiragana ↔ katakana conversion practice
+- Real-time performance tracking (accuracy and response time)
+- Vocabulary practice module with customizable word lists
+- Audio pronunciation support (added 2025/5/6)
+- Web-based and terminal interfaces
 
-# Usage
+Note: This tool focuses on character recognition rather than writing practice.
 
-If there is no develop envirment in your computer，you can run [the exe](https://github.com/liuxiangchao369/japanese-50-tone-practice/releases) file dirctly.
+## Installation
 
+### For End Users
+Download the pre-built executable:
+- [GitHub Releases](https://github.com/liuxiangchao369/japanese-50-tone-practice/releases)
+- [Mirror (China)](https://gitee.com/MorWin/japanese-50-tone-practice/releases/)
 
+Run `JapanesePractice.exe` and access:
+[http://localhost:5000](http://127.0.0.1:5000)
 
-running the `hiragana_katakana_trainer.exe` the open your browswer，input the url
-
-
-[localhost:5000](http://127.0.0.1:5000)
-
-over
-
-
-If you have foundition of develop,welcome to read :
-
-
-## Install Python Packages
-
-```shell
+### For Developers
+Python environment setup:
+```bash
 pip install -r requirements.txt
-```
-or
-```
+# or minimal installation
 pip install Flask==3.1.0
 ```
 
-## Running
-Two modes available (choose one):
+## Usage
 
-### Console Mode
-
-```
+### Terminal Version
+```bash
 python src/hiragana_katakana_trainer_terminal.py
 ```
-### Web Mode (Recommended)
-```
+
+### Web Version (Recommended)
+```bash
 python app.py
 ```
-then broswer
+Access via browser: [http://localhost:5000](http://127.0.0.1:5000)
 
- [localhost:5000](http://127.0.0.1:5000)
+## Screenshot
+![Application Screenshot](src/app.png)
 
-### Screenshot
+## Building Executable
+```bash
+pip install pyinstaller
+pyinstaller --onefile \
+            --add-data "src;src" \
+            --add-data "templates;templates" \
+            --add-data "static;static" \
+            --name JapanesePractice \
+            app.py
+```
 
 
-![image-20230322161141744](src/app.png)

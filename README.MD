@@ -21,7 +21,7 @@ tips:本应用对书写能力起不到练习作用，如有书写能力练习需
 
 
 
-运行`hiragana_katakana_trainer.exe`之后打开浏览器，在地址栏输入
+运行`JapanesePractice.exe`之后打开浏览器，在地址栏输入
 
 
 [localhost:5000](http://127.0.0.1:5000)
