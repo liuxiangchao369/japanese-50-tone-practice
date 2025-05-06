@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify,redirect, url_for
+from flask import Flask, render_template, request, jsonify,redirect, url_for,send_from_directory
 import random
 import time
 app = Flask(__name__)
@@ -127,6 +127,10 @@ def get_study_set(selected_rows):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/src/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('src', filename)
 
 
 @app.route('/start', methods=['POST'])

@@ -66,6 +66,8 @@
             color: white;
         }
     </style>
+    <audio id="audioPlayer" controls style="display:none;"></audio>
+
 </head>
 
 <body>
@@ -100,6 +102,7 @@
             <!-- 测试显示 -->
             <div class="character-display" style="border:2px solid red">
                 <span v-text="currentQuestion"></span>
+                <button @click="playAudio">播放</button>
             </div>
 
             <input v-model="userAnswer" @keyup.enter="checkAnswer" :placeholder="answerPlaceholder" autofocus>
@@ -188,6 +191,9 @@
                         currentQuestion.value = kata;
                     }
                     lastResult.value = null;
+                    // 设置音频元素的src属性
+                    const audioPlayer = document.getElementById('audioPlayer');
+                    audioPlayer.src = `src/learn50/${romaji}.mp3`;
                 };
                 const setMode = (mode) => {
                     currentMode.value = mode;
@@ -264,6 +270,10 @@
                         console.error('Error:', error);
                     }
                 };
+                const playAudio = () => {
+                    const audioPlayer = document.getElementById('audioPlayer');
+                    audioPlayer.play();
+                };
 
 
                 return {
@@ -289,7 +299,8 @@
                     studySet,
                     displayQuestion,
                     mistakes,
-                    responseTimes
+                    responseTimes,
+                    playAudio
                     // ... exposed properties ...
                 }
             }
