@@ -63,3 +63,11 @@ python app.py
 
 ![image-20230322161141744](src/app.png)
 
+## 打包exe
+```shell
+pip install pyinstaller
+
+pyinstaller --onefile --add-data "src;src" --add-data "templates;templates" --add-data "static;static" --name JapanesePractice main.py
+
+
+```
