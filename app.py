@@ -231,9 +231,9 @@ def add_vocab():
 def generate_question(mode):
     item = random.choice(vocab_data)
     if mode == 1:
-        return f"写出「{item[0]}」对应的汉字", item[1]
+        return f"写出「{item[0]}」对应的日本語漢字", item[1]
     elif mode == 2:
-        return f"写出「{item[2]}」对应的日文汉字", item[1]
+        return f"写出「{item[2]}」对应的日本語漢字", item[1]
     else:
         return f"写出「{item[1]}」对应的中文意思", item[2]
 if __name__ == '__main__':
