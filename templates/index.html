@@ -147,7 +147,8 @@
                 const modes = [
                     { value: 1, label: '平→片' },
                     { value: 2, label: '片→平' },
-                    { value: 3, label: '混合' }
+                    { value: 3, label: '混合' },
+                    { value: 4, label: '听音→平' }  // Added new mode
                 ];
                 const mistakes = ref([]);  // Add to ref declarations
                 const currentQuestionType = ref(''); // 新增
@@ -166,7 +167,8 @@
                 const answerPlaceholder = computed(() =>
                     currentMode.value === 1 ? '输入片假名' :
                         currentMode.value === 2 ? '输入平假名' :
-                            '输入对应假名'
+                            currentMode.value === 4 ? '输入平假名' : // Added for new mode
+                                '输入对应假名'
                 );
                 const displayQuestion = computed(() =>
                     currentQuestion.value || '无题目'
@@ -183,12 +185,31 @@
                     if (studySet.value.length === 0) return;
                     const item = random.choice(studySet.value);
                     const [hira, kata, romaji] = item;
-                    if (currentMode.value === 1 || (currentMode.value === 3 && Math.random() < 0.5)) {
+                    if (currentMode.value === 1) {
                         currentQuestionType.value = 'hira';
                         currentQuestion.value = hira;
-                    } else {
+                    }
+                    else if (currentMode.value === 2) {
                         currentQuestionType.value = 'kata';
                         currentQuestion.value = kata;
+                    }
+                    else if (currentMode.value === 4) {  // Added for audio mode
+                        currentQuestionType.value = 'audio';
+                        currentQuestion.value = '🔊 听音输入平假名';
+                        const audioPlayer = document.getElementById('audioPlayer');
+
+                        // Force reload by adding timestamp
+                        audioPlayer.src = `src/learn50/${romaji}.mp3?t=${Date.now()}`;
+
+                        // Delay play slightly to ensure loading
+                        setTimeout(() => {
+                            audioPlayer.play().catch(e => console.log("Audio play error:", e));
+                        }, 100);
+
+                    }
+                    else {  // Mixed mode
+                        currentQuestionType.value = Math.random() < 0.5 ? 'hira' : 'kata';
+                        currentQuestion.value = Math.random() < 0.5 ? hira : kata;
                     }
                     lastResult.value = null;
                     // 设置音频元素的src属性
@@ -236,7 +257,8 @@
                             body: JSON.stringify({
                                 question_type: currentQuestionType.value,
                                 question: currentQuestion.value,
-                                answer: userAnswer.value
+                                answer: userAnswer.value,
+                                mode: currentMode.value  // Add current mode to request
                             })
                         });
 

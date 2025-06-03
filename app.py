@@ -203,7 +203,12 @@ def check_answer():
     question_type = data["question_type"]  # 'hira' or 'kata'
     question = data["question"]
     user_answer = data["answer"].strip()
-
+    mode = data.get("mode", 1)  # Default to mode 1 if not specified
+    if mode == 4:
+        for h, k, r in hiragana_katakana:
+            if user_answer == h:
+                return jsonify({"correct": True, "correct_answer": h, "romaji": r})
+        return jsonify({"correct": False, "correct_answer": None, "romaji": None})
     # 修复1：确保正确查找对应项
     target = next(
         (
