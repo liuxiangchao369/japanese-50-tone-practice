@@ -205,10 +205,18 @@ def check_answer():
     user_answer = data["answer"].strip()
     mode = data.get("mode", 1)  # Default to mode 1 if not specified
     if mode == 4:
-        for h, k, r in hiragana_katakana:
-            if user_answer == h:
-                return jsonify({"correct": True, "correct_answer": h, "romaji": r})
-        return jsonify({"correct": False, "correct_answer": None, "romaji": None})
+        current_romaji = data["question"].split("/")[-1].replace(".mp3", "")
+        correct_hira = next(
+            (h for h, _, r in hiragana_katakana if r == current_romaji), None
+        )
+        # print(current_romaji,correct_hira)
+        return jsonify(
+            {
+                "correct": data["answer"].strip() == correct_hira,
+                "correct_answer": correct_hira,
+                "romaji": current_romaji,
+            }
+        )
     # 修复1：确保正确查找对应项
     target = next(
         (

@@ -101,9 +101,9 @@
         <div v-if="isPracticing">
             <!-- 测试显示 -->
             <div class="character-display" style="border:2px solid red">
-                <span v-text="currentQuestion"></span>
-                <button @click="playAudio">播放</button>
-            </div>
+                <span v-text="displayQuestion"></span>  <!-- Changed from currentQuestion -->
+                <button v-if="currentMode === 4" @click="playAudio">🔊 重新播放</button>
+              </div>
 
             <input v-model="userAnswer" @keyup.enter="checkAnswer" :placeholder="answerPlaceholder" autofocus>
 
@@ -170,9 +170,13 @@
                             currentMode.value === 4 ? '输入平假名' : // Added for new mode
                                 '输入对应假名'
                 );
-                const displayQuestion = computed(() =>
-                    currentQuestion.value || '无题目'
-                );
+                const displayQuestion = computed(() => {                    
+                    // if (currentMode.value == 4) return '🔊 听音输入平假名';
+                    // if (!currentQuestion.value) return '无题目';
+                    // return currentQuestion.value.includes('/')
+                    //     ? currentQuestion.value.split('/').pop()
+                    //     : currentQuestion.value;
+                });
 
                 const accuracy = computed(() =>
                     totalAnswers.value > 0 ? Math.round((correctAnswers.value / totalAnswers.value) * 100) : 0
@@ -195,7 +199,7 @@
                     }
                     else if (currentMode.value === 4) {  // Added for audio mode
                         currentQuestionType.value = 'audio';
-                        currentQuestion.value = '🔊 听音输入平假名';
+                        currentQuestion.value = `src/learn50/${romaji}.mp3`;
                         const audioPlayer = document.getElementById('audioPlayer');
 
                         // Force reload by adding timestamp
@@ -213,8 +217,8 @@
                     }
                     lastResult.value = null;
                     // 设置音频元素的src属性
-                    const audioPlayer = document.getElementById('audioPlayer');
-                    audioPlayer.src = `src/learn50/${romaji}.mp3`;
+                    // const audioPlayer = document.getElementById('audioPlayer');
+                    // audioPlayer.src = `src/learn50/${romaji}.mp3`;
                 };
                 const setMode = (mode) => {
                     currentMode.value = mode;
@@ -268,8 +272,8 @@
                             romaji: result.romaji
                         });
                         lastResult.value = result.correct;
-                        correctAnswer.value = result.correct_answer || 'aaaa';
-                        correctRomaji.value = result.romaji || 'bbbb';
+                        correctAnswer.value = result.correct_answer || "AAAAA";
+                        correctRomaji.value = result.romaji || 'BBB';
 
                         await nextTick(); // 等待DOM更新
                         totalAnswers.value++;
