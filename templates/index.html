@@ -171,11 +171,11 @@
                                 '输入对应假名'
                 );
                 const displayQuestion = computed(() => {                    
-                    // if (currentMode.value == 4) return '🔊 听音输入平假名';
-                    // if (!currentQuestion.value) return '无题目';
-                    // return currentQuestion.value.includes('/')
-                    //     ? currentQuestion.value.split('/').pop()
-                    //     : currentQuestion.value;
+                    if (currentMode.value == 4) return '🔊 听音输入平假名';
+                    if (!currentQuestion.value) return '无题目';
+                    return currentQuestion.value.includes('/')
+                        ? currentQuestion.value.split('/').pop()
+                        : currentQuestion.value;
                 });
 
                 const accuracy = computed(() =>
