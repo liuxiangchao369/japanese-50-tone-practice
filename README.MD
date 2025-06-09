@@ -65,7 +65,11 @@ python app.py
 [localhost:5000](http://127.0.0.1:5000)
 # 截图
 
-![image-20230322161141744](src/app.png)
+![50 tone](src/app.png)
+![voice](src/voice.png)
+![word-practice](src/image.png)
+
+![add words](src/image-1.png)
 
 ## 打包exe
 ```shell
