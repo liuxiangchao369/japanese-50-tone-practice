@@ -67,9 +67,9 @@ python app.py
 
 ![50 tone](src/app.png)
 ![voice](src/voice.png)
-![word-practice](src/image.png)
+![word-practice](src/word.png)
 
-![add words](src/image-1.png)
+![add words](src/add-word.png)
 
 ## 打包exe
 ```shell
