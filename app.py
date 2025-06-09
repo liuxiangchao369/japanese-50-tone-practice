@@ -112,14 +112,14 @@ vocab_data = [
     # ["て", "手", "手"],
     # ["あと", "後", "之后"],
 
-    ["なし", "梨", "梨"],
-    ["かな", "仮名", "假名"],
-    ["かに", "蟹", "螃蟹"],
+    # ["なし", "梨", "梨"],
+    # ["かな", "仮名", "假名"],
+    # ["かに", "蟹", "螃蟹"],
     # ["にこにこ", "にこにこ", "笑嘻嘻"],
-    ["いぬ", "犬", "狗"],
-    ["ねこ", "猫", "猫"],
-    ["いね", "稲", "稻子"],
-    ["きのこ", "きのこ", "蘑菇"],
+    # ["いぬ", "犬", "狗"],
+    # ["ねこ", "猫", "猫"],
+    # ["いね", "稲", "稻子"],
+    # ["きのこ", "きのこ", "蘑菇"],
 
     # ["このは", "木の葉", "树叶"],
     # ["はな", "鼻", "鼻子"],
@@ -129,6 +129,34 @@ vocab_data = [
     # ["ふく", "服", "衣服"],
     # ["ほお", "頬", "脸蛋"],
     # ["いなほ", "稲穂", "稻穗"],
+
+    ["あまい", "甘い", "甜的"],
+    ["しま", "島", "岛"],
+    ["うみ", "海", "大海"],
+    ["むかし", "昔", "从前"],
+    ["キムチ", "キムチ", "泡菜"],
+    ["まめ", "豆", "豆子"],
+    ["おとめ", "乙女", "少女"],
+    ["かも", "鴨", "鸭"],
+
+    # ["みらい", "未来", "未来"],
+    # ["きらい", "嫌い", "讨厌的"],
+    # ["りか", "理科", "理科"],
+    # ["あかり", "明かり", "灯光"],
+    # ["うるさい", "煩い", "吵的"],
+    # ["これ", "これ", "这个"],
+    # ["れきし", "歴史", "历史"],
+    # ["ロシア", "ロシア", "俄罗斯"],
+
+    # ["みんな", "みんな", "大家"],
+    # ["へんか", "変化", "变化"],
+    # ["せんろ", "線路", "铁轨"],
+    # ["にんむ", "任務", "任务"],
+    # ["てんき", "天気", "天气"],
+    # ["ヒント", "ヒント", "提示"],
+    # ["インク", "インク", "墨水"],
+    # ["けんさ", "検査", "检查"],
+
 ]
 
 
@@ -157,13 +185,15 @@ def select_rows():
     for choice in choices:
         try:
             row_num = int(choice)
-            if 1 <= row_num <= 10:
+            if 1 <= row_num <= 7:
                 start = (row_num - 1) * 5
                 end = start + 5
                 if row_num == 8:
                     selected.extend(hiragana_katakana[35:38])
+                elif row_num == 9:
+                    selected.extend(hiragana_katakana[38:43])
                 elif row_num == 10:
-                    selected.extend(hiragana_katakana[40:43])
+                    selected.extend(hiragana_katakana[43:45])
                 else:
                     selected.extend(hiragana_katakana[start:end])
         except ValueError:
@@ -180,8 +210,10 @@ def get_study_set(selected_rows):
     for row in selected_rows:
         if row == 8:  # や行
             study_set.extend(hiragana_katakana[35:38])
+        elif row == 9:  # ri行
+            study_set.extend(hiragana_katakana[38:43])
         elif row == 10:  # わ行
-            study_set.extend(hiragana_katakana[40:43])
+            study_set.extend(hiragana_katakana[43:45])
         else:
             start = (row - 1) * 5
             end = start + 5
