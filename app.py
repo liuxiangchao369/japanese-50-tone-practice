@@ -71,6 +71,42 @@ hiragana_katakana = [
     ("わ", "ワ", "wa"),
     ("を", "ヲ", "wo"),
     ("ん", "ン", "n"),
+
+    # 浊音
+    # が行
+    ("が", "ガ", "ga"),
+    ("ぎ", "ギ", "gi"),
+    ("ぐ", "グ", "gu"),
+    ("げ", "ゲ", "ge"),
+    ("ご", "ゴ", "go"),
+
+    # ざ行
+    ("ざ", "サ", "za"),
+    ("じ", "ジ", "ji"),
+    ("ず", "ズ", "zu"),
+    ("ぜ", "ゼ", "ze"),
+    ("ぞ", "ゾ", "zo"),
+    # だ行
+    ("だ", "ダ", "da"),
+    ("ぢ", "ヂ", "ji"),
+    ("づ", "ヅ", "zu"),
+    ("で", "デ", "de"),
+    ("ど", "ド", "do"),
+
+    # ば行
+    ("ば", "バ", "ba"),
+    ("び", "ビ", "bi"),
+    ("ぶ", "ブ", "bu"),
+    ("べ", "ベ", "be"),
+    ("ぼ", "ボ", "bo"),
+
+    # 半浊音
+    # ぱ行
+    ("ぱ", "パ", "pa"),
+    ("ぴ", "ピ", "pi"),
+    ("ぷ", "プ", "pu"),
+    ("ぺ", "ペ", "pe"),
+    ("ぽ", "ポ", "po"),
 ]
 stats = {"total": 0, "correct": 0, "start_time": None, "durations": []}
 
@@ -130,14 +166,14 @@ vocab_data = [
     # ["ほお", "頬", "脸蛋"],
     # ["いなほ", "稲穂", "稻穗"],
 
-    ["あまい", "甘い", "甜的"],
-    ["しま", "島", "岛"],
-    ["うみ", "海", "大海"],
-    ["むかし", "昔", "从前"],
-    ["キムチ", "キムチ", "泡菜"],
-    ["まめ", "豆", "豆子"],
-    ["おとめ", "乙女", "少女"],
-    ["かも", "鴨", "鸭"],
+    # ["あまい", "甘い", "甜的"],
+    # ["しま", "島", "岛"],
+    # ["うみ", "海", "大海"],
+    # ["むかし", "昔", "从前"],
+    # ["キムチ", "キムチ", "泡菜"],
+    # ["まめ", "豆", "豆子"],
+    # ["おとめ", "乙女", "少女"],
+    # ["かも", "鴨", "鸭"],
 
     # ["みらい", "未来", "未来"],
     # ["きらい", "嫌い", "讨厌的"],
@@ -214,11 +250,14 @@ def get_study_set(selected_rows):
             study_set.extend(hiragana_katakana[38:43])
         elif row == 10:  # わ行
             study_set.extend(hiragana_katakana[43:45])
-        else:
+        elif row<=7:
             start = (row - 1) * 5
             end = start + 5
             study_set.extend(hiragana_katakana[start:end])
-
+        elif row>=11:
+            start=46+(row-11)*5
+            end = start+5
+            study_set.extend(hiragana_katakana[start:end])
     return study_set
 
 
@@ -378,7 +417,7 @@ def add_vocab():
         vocab_data.append(new_word)
         return redirect(url_for("word_practice"))
     return render_template("add_vocab.html", vocab=vocab_data)
-
+#todo:增加删除词汇接口
 
 def generate_question(mode):
     item = random.choice(vocab_data)
